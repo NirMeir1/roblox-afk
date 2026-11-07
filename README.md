@@ -14,6 +14,11 @@ The GUI exposes the repeat interval and pause after releasing Space, both in
 seconds. Defaults and all other timings are constants in `roblox_afk.py`.
 Use `--gui` for the Tkinter window, or omit it for the original console mode.
 
+For the standalone Windows application, double-click `dist\RobloxAFK.exe`.
+It opens the same GUI without Python, installation, command-line arguments,
+or a console. See [BUILD.md](BUILD.md) for reproducible build instructions,
+packaged-application checks, and verification limitations.
+
 | Constant | Default | Purpose |
 | --- | --- | --- |
 | `STARTUP_SECONDS` | `5` | Delay before the first attempt |
@@ -100,7 +105,7 @@ cd C:\Users\meirn\roblox-afk
 Stop: switch to the console and press Ctrl+C, or move the mouse to any corner
 of the primary screen. Keep the pointer away from corners when starting.
 Timestamped console logs report each key hold and skipped/cancelled attempts.
-The same logs are appended to `roblox_afk.log` in this project. Session PID,
+The same logs are appended to `%LOCALAPPDATA%\RobloxAFK\roblox_afk.log`. Session PID,
 foreground skip reasons, and key-down/key-up events are recorded. Each native
 event checks the Windows return value; rejected events stop the tool with an
 error. Normal Ctrl+C and corner-failsafe stops return exit code `0`; handled
@@ -109,7 +114,7 @@ acted on it.
 To monitor from PowerShell:
 
 ```powershell
-Get-Content .\roblox_afk.log -Tail 20 -Wait
+Get-Content "$env:LOCALAPPDATA\RobloxAFK\roblox_afk.log" -Tail 20 -Wait
 ```
 
 ## Test inside Roblox

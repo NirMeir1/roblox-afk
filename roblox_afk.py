@@ -199,12 +199,20 @@ def send_input(mouse, allowed, keyboard=None, stop_event=None, after_space_secon
 
 
 def configure_logging():
-    log_file = Path(__file__).with_name("roblox_afk.log")
+    log_file = get_log_file()
+    handlers = [logging.FileHandler(log_file, encoding="utf-8")]
+    if sys.stdout is not None:
+        handlers.append(logging.StreamHandler(sys.stdout))
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s",
                         datefmt="%Y-%m-%d %H:%M:%S",
-                        handlers=[logging.StreamHandler(sys.stdout),
-                                  logging.FileHandler(log_file, encoding="utf-8")],
+                        handlers=handlers,
                         force=True)
+
+
+def get_log_file():
+    directory = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local")) / "RobloxAFK"
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory / "roblox_afk.log"
 
 
 def main(stop_event=None, *, interval_seconds=None, after_space_seconds=None):
@@ -214,7 +222,7 @@ def main(stop_event=None, *, interval_seconds=None, after_space_seconds=None):
     if after_space_seconds is None:
         after_space_seconds = AFTER_SPACE_SECONDS
     configure_logging()
-    log_file = Path(__file__).with_name("roblox_afk.log")
+    log_file = get_log_file()
     LOG.info("Session PID=%d; log file: %s", os.getpid(), log_file)
     if sys.platform != "win32":
         LOG.error("This proof of concept requires Windows.")
